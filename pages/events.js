@@ -60,17 +60,38 @@ const Event = () => {
     const sendData = () => {
         try {
             // try to update doc
+            // make a new date object
+            console.log("inputDate: " + inputDate);
+            //let inputDateTemp = new Date(inputDate);
+            //console.log("inputDateTemp: " + inputDateTemp);
+            //use the date object's function to make a UTC date
+            let DateTemp = (new Date(inputDate));
+            console.log("DateTemp: " + DateTemp);
+            
+            //use this new string to redefine the variable into an object with the UTC time
+            let inputDateUTC = new Date(
+                                DateTemp.getUTCFullYear(),
+                                DateTemp.getUTCMonth(),
+                                DateTemp.getUTCDate()
+                                );
+            console.log("inputDateUTC: " + inputDateUTC);
+
+
             firebase
                 .firestore()
                 .collection("events") // this time we're using one collection
 
                 .add({
                     name: inputName,
-                    date: firebase.firestore.Timestamp.fromDate(new Date(inputDate)),
+                    date: firebase.firestore.Timestamp.fromDate(inputDateUTC),
                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                     user: AuthUser.id
                 })
                 .then(console.log('Data was successfully sent to cloud firestore!'))
+                .then(console.log('data being passed as type: ' + typeof( firebase.firestore.Timestamp.fromDate((inputDateUTC)))))
+                
+                .then(console.log('Date saved was: ' + firebase.firestore.Timestamp.fromDate(inputDateUTC)))
+
                 //resetting the name and date values since we saved them to already
                 setInputName('');
                 setInputDate('');
@@ -110,7 +131,7 @@ const Event = () => {
                         children={<AddIcon color="gray.300" />}
                     />
                     <Input type="text" value={inputName} onChange={(e) => setInputName(e.target.value)} placeholder="Event title" />
-                    <Input type="date" value={inputDate} onChange={(e) => setInputDate(e.target.value)} placeholder="Event date" />
+                    <Input type="date" value={inputDate} onChange={(e) => setInputDate( e.target.value)} placeholder="Event date" />
                     
                     <Button
                         ml={2}
