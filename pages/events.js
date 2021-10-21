@@ -92,7 +92,7 @@ const Event = () => {
                 
                 .then(console.log('Date saved was: ' + firebase.firestore.Timestamp.fromDate(inputDateUTC)))
 
-                //resetting the name and date values since we saved them to already
+                //resetting the name and date values since we saved them already
                 setInputName('');
                 setInputDate('');
                 
