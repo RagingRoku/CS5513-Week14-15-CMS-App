@@ -22,7 +22,7 @@ import getAbsoluteURL from '../utils/getAbsoluteURL'
 import firebase from 'firebase/app'
 import 'firebase/firestore'
 
-const Event = () => {
+const Contact = () => {
     const AuthUser = useAuthUser()
     const [inputFirstName, setInputFirstName] = useState('')
     const [inputLastName, setInputLastName] = useState('')
@@ -177,4 +177,4 @@ export const getServerSideProps = withAuthUserTokenSSR({
 export default withAuthUser({
     whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
     whenUnauthedBeforeInit: AuthAction.REDIRECT_TO_LOGIN,
-})(Event)
+})(Contact)
