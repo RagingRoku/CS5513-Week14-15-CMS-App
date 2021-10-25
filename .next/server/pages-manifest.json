@@ -2,5 +2,11 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/contacts": "pages/contacts.js"
+  "/events": "pages/events.js",
+  "/contacts": "pages/contacts.js",
+  "/api/login": "pages/api/login.js",
+  "/contacts/[id]": "pages/contacts/[id].js",
+  "/events/[id]": "pages/events/[id].js",
+  "/todos": "pages/todos.js",
+  "/": "pages/index.js"
 }

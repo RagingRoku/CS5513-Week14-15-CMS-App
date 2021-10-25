@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import {
-    Flex,
+    Flex, HStack,
     Heading,
     InputGroup,
     InputLeftElement,
     Input,
-    Button,
+    Button, Link, 
     Text,
     IconButton,
     Divider,
@@ -21,6 +21,7 @@ import {
 import getAbsoluteURL from '../utils/getAbsoluteURL'
 import firebase from 'firebase/app'
 import 'firebase/firestore'
+import Header2 from '../components/Header2'
 
 const Contact = () => {
     const AuthUser = useAuthUser()
@@ -49,7 +50,7 @@ const Contact = () => {
                           return{
                             contactID: doc.id,
                             contactFirstName: doc.data().firstName,
-                            contactLasttName: doc.data().lastName,
+                            contactLastName: doc.data().lastName,
                             contactPhone: doc.data().phone,
                             contactEmail: doc.data().email,
                             
@@ -59,6 +60,7 @@ const Contact = () => {
                       )
                     );
                 })
+
     })
 
     const sendData = () => {
@@ -76,7 +78,13 @@ const Contact = () => {
                     user: AuthUser.id
                 })
                 .then(console.log('Data was successfully sent to cloud firestore!'))
-           
+
+                .then(console.log('inputFirstName was ' + inputFirstName))
+                .then(console.log('inputLastName was ' + inputLastName))
+                .then(console.log('inputPhone was ' + inputPhone))
+                .then(console.log('inputEmail was ' + inputEmail))
+
+
                 //resetting state variables since we saved them already
                 setInputFirstName('');
                 setInputLastName('');
@@ -103,6 +111,12 @@ const Contact = () => {
 
 
     return (
+        <>
+
+        <Header2
+        email={AuthUser.email} 
+        signOut={AuthUser.signOut} />
+        
         <Flex flexDir="column" maxW={800} align="center" justify="center" minH="100vh" m="auto" px={4}>
             <Flex justify="space-between" w="100%" align="center">
                 <Heading mb={4}>Welcome, {AuthUser.email}!</Heading>
@@ -120,7 +134,7 @@ const Contact = () => {
                     <Input type="text" value={inputFirstName} onChange={(e) => setInputFirstName(e.target.value)} placeholder="First Name" />
                     <Input type="text" value={inputLastName} onChange={(e) => setInputLastName(e.target.value)} placeholder="Last Name" />
                     <Input type="tel" value={inputPhone} onChange={(e) => setInputPhone(e.target.value)} placeholder="Phone Number" />
-                    <Input type="email" value={inputEmail} onChange={(e) => setInputEmail(e.target.value)} placeholder="email@example.com" />
+                    <Input type="eamil" value={inputEmail} onChange={(e) => setInputEmail(e.target.value)} placeholder="email@example.com" />
 
                     
                     <Button
@@ -128,7 +142,7 @@ const Contact = () => {
                         onClick={() => sendData()}
 
                     >
-                        Add Contact
+                        Add to Address Book
                     </Button>
                 </InputGroup>
                 {contacts.map((item, i) => {
@@ -144,21 +158,24 @@ const Contact = () => {
                             borderRadius={5}
                             justifyContent="space-between"
                         >
-                            <Flex align="center">
+                            <HStack spacing={6} w="full" >
+                                
+                                <Text fontSize="xl" mr={4}>{i + 1}.</Text>
 
-                                <Text>{item.firstName}</Text>
-                                <Text>{item.lastName}</Text>
-                                <Text>{item.phone}</Text>
-                                <Text>{item.email}</Text>
+                                <Link href={"/contacts/" + item.contactID} >
+                                    {item.contactFirstName} {item.contactLastName} 
+                                </Link>
 
-                            </Flex>
+
+                            </HStack>
                             <IconButton onClick={() => deleteContact(item.contactID)} icon={<DeleteIcon />} />
                         </Flex>
                     </React.Fragment>
                 )
             })}
         </Flex>
-        
+
+        </>
     )
 }
 

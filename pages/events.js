@@ -6,6 +6,7 @@ import {
     InputLeftElement,
     Input,
     Button,
+    Link,
     Text,
     IconButton,
     Divider,
@@ -21,6 +22,7 @@ import {
 import getAbsoluteURL from '../utils/getAbsoluteURL'
 import firebase from 'firebase/app'
 import 'firebase/firestore'
+import Header2 from '../components/Header2'
 
 const Event = () => {
     const AuthUser = useAuthUser()
@@ -116,13 +118,15 @@ const Event = () => {
 
 
     return (
+        <>
+        <Header2
+        email={AuthUser.email} 
+        signOut={AuthUser.signOut} />
+
+
         <Flex flexDir="column" maxW={800} align="center" justify="center" minH="100vh" m="auto" px={4}>
             <Flex justify="space-between" w="100%" align="center">
-                <Heading mb={4}>Welcome, {AuthUser.email}!</Heading>
-                <Flex>
-                    <DarkModeSwitch />
-                    <IconButton ml={2} onClick={AuthUser.signOut} icon={<StarIcon />} />
-                </Flex>
+
             </Flex>
 
                 <InputGroup>
@@ -156,7 +160,7 @@ const Event = () => {
                         >
                             <Flex align="center">
                                 <Text fontSize="xl" mr={4}>{i + 1}.</Text>
-                                <Text>{item.eventName}</Text>
+                                <Link href={"/events/" + item.eventID} >{item.eventName}</Link>
                                 <Text>... {item.eventDate}</Text>
 
                             </Flex>
@@ -166,6 +170,7 @@ const Event = () => {
                 )
             })}
         </Flex>
+        </>
         
     )
 }

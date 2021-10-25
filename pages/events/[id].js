@@ -1,17 +1,29 @@
-import { Flex, Heading, Text } from "@chakra-ui/react";
+import { Flex, Heading, Text, VStack, Link } from "@chakra-ui/react";
 import { useAuthUser, withAuthUser, withAuthUserTokenSSR, AuthAction } from 'next-firebase-auth';
 import { getFirebaseAdmin } from 'next-firebase-auth';
+import Header2 from "../../components/Header2";
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 
 const SingleEvent = ({itemData}) => {
+  const AuthUser = useAuthUser()
+
 
   return (
     <>
       <Flex>
-        <Heading> {itemData.name}</Heading>
+        <VStack w="full">
+          <Header2
+          email={AuthUser.email} 
+          signOut={AuthUser.signOut} />
+          
+          <Heading>
+            {itemData.name}
+          </Heading>
+        </VStack>
+
       </Flex>
-      <Flex>
+      <Flex justifyContent="center">
         <Text> {itemData.date}</Text>
       </Flex>
     </>

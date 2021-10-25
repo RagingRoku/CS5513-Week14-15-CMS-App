@@ -6,6 +6,7 @@ import {
 } from 'next-firebase-auth'
 import Header from '../components/Header'
 import DemoPageLinks from '../components/DemoPageLinks'
+import Header2 from '../components/Header2'
 
 const styles = {
   content: {
@@ -20,8 +21,10 @@ const Demo = () => {
   const AuthUser = useAuthUser()
   return (
     <div>
-      <Header email={AuthUser.email} signOut={AuthUser.signOut} />
-      <div style={styles.content}>
+        <Header2
+        email={AuthUser.email} 
+        signOut={AuthUser.signOut} />
+        <div style={styles.content}>
         <div style={styles.infoTextContainer}>
           <h3>Home</h3>
           <p>
