@@ -1,12 +1,46 @@
-import { Flex, Heading, Text, VStack, Link } from "@chakra-ui/react";
+import { Flex, Heading, Text, VStack, Link,
+        Input, Button } from "@chakra-ui/react";
 import { useAuthUser, withAuthUser, withAuthUserTokenSSR, AuthAction } from 'next-firebase-auth';
 import { getFirebaseAdmin } from 'next-firebase-auth';
 import Header2 from "../../components/Header2";
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import { useState, useEffect } from "react";
+
 
 const SingleContact = ({itemData}) => {
-  const AuthUser = useAuthUser()
+  const AuthUser = useAuthUser();
+  const [inputFirstName, setInputFirstName] = useState(itemData.firstName);
+  const [inputLastName, setInputLastName] = useState(itemData.lastName);
+  const [inputPhone, setInputPhone] = useState(itemData.phone);
+  const [inputEmail, setInputEmail] = useState(itemData.email);
+
+  const [statusMsg, setStatusMsg] = useState('Update');
+
+  const sendData = async () => {
+    try{
+      //trying to update the document
+      const docRef = await firebase.firestore().collection("contacts").doc(itemData.id);
+      const doc = docRef.get();
+
+      if(!doc.empty){
+        //since this is going to the DB, field name has to match the one used in the DB
+        docRef.update(
+          {
+            firstName: inputFirstName,
+            lastName: inputLastName,
+            phone: inputPhone,
+            email: inputEmail
+          }
+        );
+        setStatusMsg("Updated!")
+      }
+
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
 
 
   return (
@@ -18,16 +52,32 @@ const SingleContact = ({itemData}) => {
           signOut={AuthUser.signOut} />
           
           <Heading>
-            {itemData.name}
+            {itemData.firstName} {itemData.lastName}
           </Heading>
         </VStack>
 
       </Flex>
       <Flex justifyContent="center">
-        <Text> {itemData.phone} </Text>
+      <Input type="text" value={inputFirstName} onChange={(e) => setInputFirstName(e.target.value)} placeholder="First Name" />
+      <Input type="text" value={inputLastName} onChange={(e) => setInputLastName(e.target.value)} placeholder="Last Name" />
       </Flex>
+
+
       <Flex justifyContent="center">
-        <Text> {itemData.email}</Text>
+      <Input type="tel" value={inputPhone} onChange={(e) => setInputPhone(e.target.value)} placeholder="phone number" />
+      <Input type="email" value={inputEmail} onChange={(e) => setInputEmail(e.target.value)} placeholder="email address" />
+
+
+      </Flex>
+
+      <Flex justifyContent="center">
+
+      <Button
+            ml={2}
+            onClick={() => sendData()}
+          >
+            {statusMsg}
+        </Button>
       </Flex>
 
     </>
@@ -50,7 +100,8 @@ export const getServerSideProps = withAuthUserTokenSSR(
       let docData = doc.data();
       itemData = {
         id: doc.id,
-        name: docData.firstName + " " +  docData.lastName,
+        firstName: docData.firstName, 
+        lastName: docData.lastName,
         phone: docData.phone,
         email: docData.email,
 

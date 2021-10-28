@@ -1,13 +1,37 @@
-import { Flex, Heading, Text, VStack, Link } from "@chakra-ui/react";
+import { Flex, Heading, Text, VStack, Link, Input,
+        Button } from "@chakra-ui/react";
 import { useAuthUser, withAuthUser, withAuthUserTokenSSR, AuthAction } from 'next-firebase-auth';
 import { getFirebaseAdmin } from 'next-firebase-auth';
 import Header2 from "../../components/Header2";
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import { useState, useEffect } from "react";
 
 const SingleTodo = ({itemData}) => {
-  const AuthUser = useAuthUser()
+  const AuthUser = useAuthUser();
+  const [inputName, setInputName] = useState(itemData.name);
+  const [statusMsg, setStatusMsg] = useState('Update');
 
+  const sendData = async () => {
+    try{
+      //trying to update the document
+      const docRef = await firebase.firestore().collection("todos").doc(itemData.id);
+      const doc = docRef.get();
+
+      if(!doc.empty){
+        //since this is going to the DB, field name has to match the one used in the DB
+        docRef.update(
+          {
+            todo: inputName
+          }
+        );
+        setStatusMsg("Updated!")
+      }
+
+    } catch(error) {
+      console.log(error);
+    }
+  }
 
   return (
     <>
@@ -24,7 +48,13 @@ const SingleTodo = ({itemData}) => {
 
       </Flex>
       <Flex justifyContent="center">
-        <Text> {itemData.date}</Text>
+        <Input type="text" value={inputName} onChange={(e) => setInputName(e.target.value)} placeholder="Event Title" />
+        <Button
+            ml={2}
+            onClick={() => sendData()}
+          >
+            {statusMsg}
+          </Button>
       </Flex>
     </>
   );
