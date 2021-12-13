@@ -1,42 +1,59 @@
 import React from 'react'
+import Link from 'next/link';
+import Layout from '../components/layout';
+
+
 import {
   useAuthUser,
   withAuthUser,
   withAuthUserTokenSSR,
 } from 'next-firebase-auth'
 import Header from '../components/Header'
-import DemoPageLinks from '../components/DemoPageLinks'
+import styles from '../styles/Home.module.css';
 import Header2 from '../components/Header2'
+import { getSortedList } from '../lib/data';
+//import Layout from '../components/layout';
 
-const styles = {
-  content: {
-    padding: 32,
-  },
-  infoTextContainer: {
-    marginBottom: 32,
-  },
+export async function getStaticProps(){
+  const allData = await getSortedList();
+  return{
+    props: {
+      allData
+    },
+    revalidate: 60 // seconds before Incremental Static Regeneration
+  }
 }
 
-const Demo = () => {
+export default function Home({ allData }) {
   const AuthUser = useAuthUser()
+
   return (
-    <div>
-        <Header2
-        email={AuthUser.email} 
-        signOut={AuthUser.signOut} />
-        <div style={styles.content}>
-        <div style={styles.infoTextContainer}>
-          <h3>Welcome!</h3>
-          <p>
-            Sign-in and choose from the options above
-          </p>
-          
-        </div>
-      </div>
+
+    <Layout home>
+    <Header2
+    email={AuthUser.email} 
+    signOut={AuthUser.signOut} />
+
+      <h3>Welcome!</h3>
+      <p>
+        Sign-in to choose from the options above
+      </p>
+
+    <h1>
+    Posts
+    </h1>
+    <div className="list-group col-6">
+      {allData.map(({ id, name }) => (
+        <Link key={id} href={`/${id}`}>
+          {/*<a className="list-group-item list-group-item-action"> {name} </a>*/}
+          <a className="btn-group btn btn-primary"> {name} </a>
+
+        </Link>
+      ))}
     </div>
-  )
+  </Layout>
+
+
+
+);
 }
-
-export const getServerSideProps = withAuthUserTokenSSR()()
-
-export default withAuthUser()(Demo)
